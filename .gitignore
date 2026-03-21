@@ -19,6 +19,9 @@ erp-vitrinas/build/
 erp-vitrinas/supabase/.branches
 erp-vitrinas/supabase/.temp
 
+# Visual companion
+.superpowers/
+
 # Misc
 .DS_Store
 *.pem
