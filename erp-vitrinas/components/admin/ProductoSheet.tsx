@@ -41,6 +41,7 @@ export function ProductoSheet({ open, onClose, producto }: ProductoSheetProps) {
   })
 
   useEffect(() => {
+    if (!open) return
     if (producto) {
       reset({
         codigo: producto.codigo,
@@ -55,22 +56,21 @@ export function ProductoSheet({ open, onClose, producto }: ProductoSheetProps) {
     } else {
       reset({ estado: 'activo', costo_compra: 0, precio_venta_comercio: 0, unidad_medida: 'unidad' })
     }
-  }, [producto, reset])
+  }, [open, producto, reset])
 
   async function onSubmit(values: ProductoFormOutput) {
     try {
       if (producto) {
         await updateProducto.mutateAsync({ id: producto.id, values })
-        toast.success('Producto actualizado')
       } else {
         await createProducto.mutateAsync(values)
-        toast.success('Producto creado')
       }
+      toast.success('Producto guardado')
       onClose()
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Error desconocido'
-      const display = msg.includes('unique') ? 'Este código ya existe' : msg
-      toast.error(display)
+      const isDuplicate = msg.includes('23505') || msg.includes('duplicate key') || msg.includes('unique')
+      toast.error(isDuplicate ? 'Este código ya existe' : msg)
     }
   }
 

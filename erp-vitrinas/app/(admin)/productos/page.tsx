@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { Plus, Pencil } from 'lucide-react'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
@@ -24,7 +24,7 @@ export default function ProductosPage() {
 
   const [search, setSearch] = useState('')
   const [filterCategoria, setFilterCategoria] = useState('')
-  const [filterEstado, setFilterEstado] = useState('todos')
+  const [filterEstado, setFilterEstado] = useState<'todos' | 'activo' | 'inactivo'>('todos')
   const [sheetOpen, setSheetOpen] = useState(false)
   const [editingProducto, setEditingProducto] = useState<Producto | null>(null)
 
@@ -41,7 +41,7 @@ export default function ProductosPage() {
     })
   }, [productos, search, filterCategoria, filterEstado])
 
-  function handleToggle(producto: Producto) {
+  const handleToggle = useCallback((producto: Producto) => {
     const nuevoEstado = producto.estado === 'activo' ? 'inactivo' : 'activo'
     toggleEstado.mutate(
       { id: producto.id, estado: nuevoEstado },
@@ -49,9 +49,9 @@ export default function ProductosPage() {
         onError: () => toast.error('Error al cambiar estado'),
       }
     )
-  }
+  }, [toggleEstado])
 
-  const columns: Column<Producto>[] = [
+  const columns = useMemo<Column<Producto>[]>(() => [
     { key: 'codigo', header: 'Código', render: (p) => <span className="font-mono text-xs">{p.codigo}</span> },
     { key: 'nombre', header: 'Nombre', render: (p) => p.nombre },
     { key: 'categoria', header: 'Categoría', render: (p) => p.categorias?.nombre ?? '—' },
@@ -96,7 +96,7 @@ export default function ProductosPage() {
       ),
       className: 'w-12',
     },
-  ]
+  ], [handleToggle, setEditingProducto, setSheetOpen])
 
   return (
     <div>
@@ -132,7 +132,7 @@ export default function ProductosPage() {
         </select>
         <select
           value={filterEstado}
-          onChange={(e) => setFilterEstado(e.target.value)}
+          onChange={(e) => setFilterEstado(e.target.value as 'todos' | 'activo' | 'inactivo')}
           className="border border-slate-200 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="todos">Todos los estados</option>
