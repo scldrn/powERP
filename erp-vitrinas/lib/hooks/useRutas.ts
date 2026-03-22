@@ -137,7 +137,18 @@ export function useUpdateRuta() {
         }
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
+    onSuccess: (_, variables) => {
+      // Actualizar cache sincrónicamente para que la UI refleje el cambio de inmediato
+      queryClient.setQueryData(QUERY_KEY, (old: Ruta[] | undefined) => {
+        if (!old) return old
+        return old.map((r) => {
+          if (r.id !== variables.id) return r
+          return { ...r, ...variables.datos }
+        })
+      })
+      // Invalidar para refetch en background y asegurar consistencia
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+    },
   })
 }
 

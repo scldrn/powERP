@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function VisitaInicioView({ visita, iniciarVisita, marcarNoRealizada }: Props) {
+  const router = useRouter()
   const [showMotivo, setShowMotivo] = useState(false)
   const [motivo, setMotivo] = useState('')
   const [motivoError, setMotivoError] = useState('')
@@ -31,7 +33,10 @@ export function VisitaInicioView({ visita, iniciarVisita, marcarNoRealizada }: P
     }
     setMotivoError('')
     marcarNoRealizada.mutate(motivo.trim(), {
-      onSuccess: () => toast.success('Visita marcada como no realizada'),
+      onSuccess: () => {
+        toast.success('Visita marcada como no realizada')
+        router.push('/campo/ruta-del-dia')
+      },
       onError: (err) => toast.error(err.message),
     })
   }

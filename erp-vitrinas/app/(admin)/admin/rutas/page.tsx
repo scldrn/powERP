@@ -34,6 +34,7 @@ type RutaRow = {
   zonas: { nombre: string } | null
   rutas_pdv: { pdv_id: string; orden_visita: number }[]
   num_pdvs: number
+  nota_reasignacion?: string | null
 }
 
 // Mapa de clases para badge de estado
@@ -223,6 +224,7 @@ export default function RutasPage() {
                 estado: (editingRuta.estado === 'inactiva' ? 'inactiva' : 'activa') as
                   | 'activa'
                   | 'inactiva',
+                nota_reasignacion: editingRuta.nota_reasignacion,
                 rutas_pdv: editingRuta.rutas_pdv,
               }
             : undefined

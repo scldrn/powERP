@@ -110,7 +110,7 @@ test.describe('Sprint 3 — Campo', () => {
   test('colaboradora ve su ruta del día con PDVs en orden', async ({ page }) => {
     await loginColaboradora(page)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-    await expect(page.getByText('Tienda Demo Norte')).toBeVisible()
+    await expect(page.getByText('Tienda Demo Norte').first()).toBeVisible()
   })
 
   // Test 2: Tap en visita planificada → pantalla de inicio
@@ -157,7 +157,7 @@ test.describe('Sprint 3 — Campo', () => {
     await btnGuardar.click()
 
     await page.waitForURL('/campo/ruta-del-dia')
-    await expect(page.getByText('Tienda Demo Norte')).toBeVisible()
+    await expect(page.getByText('Tienda Demo Norte').first()).toBeVisible()
   })
 
   // Test 6: Marcar no realizada
@@ -203,7 +203,10 @@ test.describe('Sprint 3 — Admin', () => {
     await expect(textarea).toBeVisible()
     await textarea.fill('Colaboradora de licencia')
     await page.getByRole('button', { name: /guardar/i }).click()
+    // Esperar que el sheet se cierre y la lista se actualice
+    await expect(page.getByRole('heading', { name: /editar ruta/i })).not.toBeVisible({ timeout: 5000 })
     await page.getByRole('button', { name: /editar/i }).first().click()
-    await expect(textarea).toHaveValue('Colaboradora de licencia')
+    const textareaReopened = page.locator('textarea[placeholder*="Motivo del cambio"]')
+    await expect(textareaReopened).toHaveValue('Colaboradora de licencia')
   })
 })
