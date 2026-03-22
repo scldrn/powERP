@@ -841,6 +841,7 @@ export type Database = {
           frecuencia: string | null
           id: string
           nombre: string
+          nota_reasignacion: string | null
           updated_at: string
           zona_id: string | null
         }
@@ -854,6 +855,7 @@ export type Database = {
           frecuencia?: string | null
           id?: string
           nombre: string
+          nota_reasignacion?: string | null
           updated_at?: string
           zona_id?: string | null
         }
@@ -867,6 +869,7 @@ export type Database = {
           frecuencia?: string | null
           id?: string
           nombre?: string
+          nota_reasignacion?: string | null
           updated_at?: string
           zona_id?: string | null
         }

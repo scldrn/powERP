@@ -39,39 +39,49 @@ Archivo de seguimiento de sprints para el agente Claude Code.
 
 ### Sprint 1 — Autenticación + Productos + PDV
 **Objetivo:** Login funcional y catálogo de productos con CRUD.
-**Estado general:** `[ ]` pendiente
+**Estado general:** `[x]` completado
 **HUs:** HU-01, HU-02, HU-03, HU-04, HU-05, HU-06, HU-07, HU-08
 
 | # | Tarea | HU | Estado | Notas |
 |---|-------|----|--------|-------|
-| S1-01 | Página de login con email/contraseña (Supabase Auth) | HU-01 | `[ ]` | |
-| S1-02 | Redirección post-login según rol (admin → /dashboard, colaboradora → /ruta-del-dia) | HU-01 | `[ ]` | |
-| S1-03 | Middleware de protección de rutas + sesión persistente | HU-01 | `[ ]` | |
-| S1-04 | Página de logout | HU-03 | `[ ]` | |
-| S1-05 | CRUD de usuarios con asignación de roles (solo admin) | HU-02 | `[ ]` | |
-| S1-06 | Listado de productos con búsqueda en tiempo real y filtros | HU-07 | `[ ]` | |
-| S1-07 | Formulario de creación de producto (código único, nombre, categoría, costo, precio) | HU-04 | `[ ]` | |
-| S1-08 | Edición de producto (precio de venta al comercio) | HU-05 | `[ ]` | |
-| S1-09 | Activar/desactivar producto | HU-06 | `[ ]` | |
-| S1-10 | CRUD de categorías | HU-04 | `[ ]` | |
-| S1-11 | Listado y formulario de Puntos de Venta con datos de contacto y ubicación | HU-08 | `[ ]` | |
+| S1-01 | Página de login con email/contraseña (Supabase Auth) | HU-01 | `[x]` | |
+| S1-02 | Redirección post-login según rol (admin → /dashboard, colaboradora → /ruta-del-dia) | HU-01 | `[x]` | |
+| S1-03 | Middleware de protección de rutas + sesión persistente | HU-01 | `[x]` | |
+| S1-04 | Página de logout | HU-03 | `[x]` | |
+| S1-05 | CRUD de usuarios con asignación de roles (solo admin) | HU-02 | `[x]` | |
+| S1-06 | Listado de productos con búsqueda en tiempo real y filtros | HU-07 | `[x]` | |
+| S1-07 | Formulario de creación de producto (código único, nombre, categoría, costo, precio) | HU-04 | `[x]` | |
+| S1-08 | Edición de producto (precio de venta al comercio) | HU-05 | `[x]` | |
+| S1-09 | Activar/desactivar producto | HU-06 | `[x]` | |
+| S1-10 | CRUD de categorías | HU-04 | `[x]` | |
+| S1-11 | Listado y formulario de Puntos de Venta con datos de contacto y ubicación | HU-08 | `[x]` | |
 
 ---
 
 ### Sprint 2 — Vitrinas + Inventario Central + Rutas
 **Objetivo:** Gestión completa de vitrinas y configuración de rutas.
-**Estado general:** `[ ]` pendiente
+**Estado general:** `[x]` completado
 **HUs:** HU-09, HU-10, HU-11, HU-12, HU-13, HU-25
 
 | # | Tarea | HU | Estado | Notas |
 |---|-------|----|--------|-------|
-| S2-01 | Crear vitrina y asignarla a un PDV | HU-09 | `[ ]` | |
-| S2-02 | Definir surtido estándar por vitrina (producto + cantidad objetivo) | HU-10 | `[ ]` | |
-| S2-03 | Vista de inventario actual de vitrina (stock vs surtido estándar) | HU-11 | `[ ]` | |
-| S2-04 | Marcar vitrina como retirada | HU-12 | `[ ]` | |
-| S2-05 | Entrada de productos al inventario central por compra | HU-25 | `[ ]` | |
-| S2-06 | Crear ruta con lista de PDV ordenada y asignar a colaboradora | HU-13 | `[ ]` | |
-| S2-07 | Vista de rutas: listado con estado y colaboradora asignada | HU-13 | `[ ]` | |
+| S2-01 | Crear vitrina y asignarla a un PDV | HU-09 | `[x]` | |
+| S2-02 | Definir surtido estándar por vitrina (producto + cantidad objetivo) | HU-10 | `[x]` | |
+| S2-03 | Vista de inventario actual de vitrina (stock vs surtido estándar) | HU-11 | `[x]` | |
+| S2-04 | Marcar vitrina como retirada | HU-12 | `[x]` | |
+| S2-05 | Entrada de productos al inventario central por compra | HU-25 | `[x]` | |
+| S2-06 | Crear ruta con lista de PDV ordenada y asignar a colaboradora | HU-13 | `[x]` | |
+| S2-07 | Vista de rutas: listado con estado y colaboradora asignada | HU-13 | `[x]` | |
+
+### Sprint 2 — Log (2026-03-22)
+
+Completado: Módulos Vitrinas (listado + detalle con tabs), Inventario Central y Rutas (con drag-and-drop de PDVs).
+
+Decisiones técnicas:
+- `params` en Next.js 16 desempaquetado con `use(params)` en client components
+- Rollback compensatorio para mutaciones de 2 pasos en `useRutas` (create + insert PDVs; update con delete+reinsert)
+- `useQueryClient()` siempre antes de `useQuery()` — regla confirmada en Sprint 2
+- `z.input<typeof schema>` para tipos de formulario con `.default()` — patrón consolidado
 
 ---
 
@@ -186,9 +196,10 @@ Archivo de seguimiento de sprints para el agente Claude Code.
 | Fecha | Sprint/Tarea | Acción | Detalle |
 |-------|-------------|--------|---------|
 | 2026-03-21 | Fase 0 | Completado | Setup completo: Next.js 14, 10 migraciones SQL, triggers, RLS, auth triggers, seed, clientes Supabase, middleware. |
-| 2026-03-21 | Sprint 1 | Completado | Auth, AppShell/AppSidebar, CRUD productos/categorías/PDV/usuarios. 13 tests Playwright. PR #1 abierto (→ main). |
+| 2026-03-21 | Sprint 1 | Completado | Auth, AppShell/AppSidebar, CRUD productos/categorías/PDV/usuarios. 13 tests Playwright. React Query all-client. |
 | 2026-03-21 | Sprint 1 | Bug fix | Route groups (admin)/(campo) no generan prefijo URL. Páginas movidas a subcarpetas admin/ y campo/ dentro del grupo. |
 | 2026-03-21 | Sprint 1 | Bug fix | Selects vacíos en PDV (zona_id, forma_pago_preferida) fallaban validación Zod. Añadido z.preprocess para convertir "" → undefined. |
+| 2026-03-22 | Sprint 2 | Completado | Módulos Vitrinas (listado + detalle tabs), Inventario Central y Rutas con DnD. Dependencias: @dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities. |
 
 ---
 
