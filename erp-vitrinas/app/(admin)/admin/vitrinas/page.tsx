@@ -118,13 +118,16 @@ export default function VitrinasPage() {
                 <Eye size={14} aria-label="Ver detalle" />
               </Link>
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleEditar(v)}
-            >
-              <Pencil size={14} aria-label="Editar" />
-            </Button>
+            {/* Vitrinas retiradas no se pueden editar */}
+            {v.estado !== 'retirada' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEditar(v)}
+              >
+                <Pencil size={14} aria-label="Editar" />
+              </Button>
+            )}
             {/* Retirar solo si no está ya retirada */}
             {v.estado !== 'retirada' && (
               <Button
@@ -218,9 +221,10 @@ export default function VitrinasPage() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleRetiroConfirm}
+              disabled={retirarVitrina.isPending}
               className="bg-red-600 hover:bg-red-700"
             >
-              Retirar
+              {retirarVitrina.isPending ? 'Retirando...' : 'Retirar'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
