@@ -1,5 +1,6 @@
 -- Política UPDATE necesaria para upsert (INSERT ... ON CONFLICT DO UPDATE).
 -- Restringe a la colaboradora dueña de la visita padre, o admin.
+DROP POLICY IF EXISTS "detalle_visita_update" ON detalle_visita;
 CREATE POLICY "detalle_visita_update" ON detalle_visita
   FOR UPDATE TO authenticated
   USING (
