@@ -7,7 +7,6 @@ import { DataTable, type Column } from '@/components/admin/DataTable'
 import { SearchInput } from '@/components/admin/SearchInput'
 import { InventarioCentralSheet } from '@/components/admin/InventarioCentralSheet'
 import { useInventarioCentral, type InventarioCentralItem } from '@/lib/hooks/useInventarioCentral'
-import { useCategorias } from '@/lib/hooks/useCategorias'
 
 // Formateador de moneda MXN
 function formatMXN(value: number): string {
@@ -28,7 +27,6 @@ function formatFecha(iso: string): string {
 
 export default function InventarioCentralPage() {
   const { data: items = [], isLoading } = useInventarioCentral()
-  const { data: categorias = [] } = useCategorias()
 
   const [search, setSearch] = useState('')
   const [filterCategoria, setFilterCategoria] = useState('')

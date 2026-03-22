@@ -23,7 +23,6 @@ const QUERY_KEY = ['inventario_central'] as const
 
 export function useInventarioCentral() {
   const supabase = createClient()
-  const queryClient = useQueryClient()
 
   return useQuery({
     queryKey: QUERY_KEY,
