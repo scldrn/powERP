@@ -1,0 +1,3 @@
+-- Seed SQL intencionalmente minimo.
+-- Los fixtures de autenticacion y roles operativos se crean con:
+-- `npm run seed:auth`
