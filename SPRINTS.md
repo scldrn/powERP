@@ -111,8 +111,8 @@ Decisiones técnicas:
 | S4-01 | Registrar monto cobrado y forma de pago | HU-20 | `[x]` | `formas_pago` + flujo `VisitaCobroView` |
 | S4-02 | Validación: nota obligatoria si monto_cobrado ≠ monto_calculado → estado `discrepancia` | HU-20 | `[x]` | Validación cliente + RPC `cerrar_visita()` |
 | S4-03 | Sugerencia de reposición hasta surtido estándar, ajustable por colaboradora | HU-21 | `[x]` | `VisitaReposicionView` con stock de colaboradora |
-| S4-04 | Subida de fotos de vitrina a Supabase Storage (antes/después de reposición) | HU-22 | `[x]` | Fotos post-reposición en bucket `fotos-visita` |
-| S4-05 | Cierre de visita: actualizar inventario_vitrina + inventario_central + movimientos | HU-23 | `[x]` | RPC + `inventario_colaboradora` + movimientos inmutables |
+| S4-04 | Subida de fotos de vitrina a Supabase Storage (antes/después de reposición) | HU-22 | `[x]` | Bucket `fotos-visita`; al menos 1 foto final requerida para completar la visita |
+| S4-05 | Cierre de visita: actualizar inventario_vitrina + inventario_colaboradora + movimientos | HU-23 | `[x]` | RPC + `inventario_colaboradora` + movimientos inmutables |
 | S4-06 | Cierre de visita: generar cobro + marcar visita como `completada` | HU-23 | `[x]` | Cobro persistido + badge de discrepancia en admin |
 | S4-07 | Marcar visita como `no_realizada` con motivo | HU-24 | `[x]` | Cubierto como regresión de Sprint 3 y validado en e2e |
 
@@ -153,25 +153,36 @@ Decisiones técnicas:
 
 ## Fase 2 — Gestión y Analítica
 
-**Estado general:** `[ ]` pendiente
+**Estado general:** `[x]` completado (2026-03-24)
 **HUs:** HU-32, HU-33, HU-34, HU-35, HU-36, HU-37
 
 | # | Tarea | HU | Estado | Notas |
 |---|-------|----|--------|-------|
-| F2-01 | Registro de garantía (producto defectuoso devuelto por comercio) | HU-32 | `[ ]` | |
-| F2-02 | Resolución de garantía: cambio / baja / devolución a proveedor | HU-33 | `[ ]` | |
-| F2-03 | Módulo de Proveedores: CRUD con datos de contacto y condiciones de pago | — | `[ ]` | |
-| F2-04 | Módulo de Compras: crear orden, confirmar recepción, registrar cantidades reales | — | `[ ]` | |
-| F2-05 | Dashboard en tiempo real: ventas del día, visitas, cobros, incidencias abiertas | HU-34 | `[ ]` | Supabase Realtime |
-| F2-06 | Gráfica de ventas diarias últimos 30 días | HU-34 | `[ ]` | |
-| F2-07 | Gráfica de ventas por ruta/colaboradora en el mes | HU-34 | `[ ]` | |
-| F2-08 | Tabla: top 10 vitrinas por ventas del mes | HU-34 | `[ ]` | |
-| F2-09 | Tabla: vitrinas con stock bajo (< 30% del surtido estándar) | HU-37 | `[ ]` | |
-| F2-10 | Reporte de ventas por período con filtros exportable a Excel (.xlsx) | HU-35 | `[ ]` | |
-| F2-11 | Ranking de vitrinas por ventas con indicadores de cambio vs período anterior | HU-36 | `[ ]` | |
-| F2-12 | Reporte de inventario por ubicación con valor económico exportable | — | `[ ]` | |
-| F2-13 | Reporte de visitas planificadas vs realizadas exportable | — | `[ ]` | |
-| F2-14 | Reporte de incidencias y garantías por período exportable | — | `[ ]` | |
+| F2-01 | Registro de garantía (producto defectuoso devuelto por comercio) | HU-32 | `[x]` | Captura en campo + baja auditada desde vitrina |
+| F2-02 | Resolución de garantía: cambio / baja / devolución a proveedor | HU-33 | `[x]` | Gestión admin con responsables y actualización de inventario |
+| F2-03 | Módulo de Proveedores: CRUD con datos de contacto y condiciones de pago | — | `[x]` | Acceso `admin` y `compras` |
+| F2-04 | Módulo de Compras: crear orden, confirmar recepción, registrar cantidades reales | — | `[x]` | Recepción parcial/real y entrada a inventario central |
+| F2-05 | Dashboard en tiempo real: ventas del día, visitas, cobros, incidencias abiertas | HU-34 | `[x]` | Realtime + fallback polling; KPI de cobros del mes |
+| F2-06 | Gráfica de ventas diarias últimos 30 días | HU-34 | `[x]` | |
+| F2-07 | Gráfica de ventas por ruta/colaboradora en el mes | HU-34 | `[x]` | |
+| F2-08 | Tabla: top 10 vitrinas por ventas del mes | HU-34 | `[x]` | |
+| F2-09 | Tabla: vitrinas con stock bajo (< 30% del surtido estándar) | HU-37 | `[x]` | Incluye feed de 5 incidencias abiertas con antigüedad |
+| F2-10 | Reporte de ventas por período con filtros exportable a Excel (.xlsx) | HU-35 | `[x]` | Filtros por ruta, colaboradora, PDV y producto; export server-side |
+| F2-11 | Ranking de vitrinas por ventas con indicadores de cambio vs período anterior | HU-36 | `[x]` | Export server-side |
+| F2-12 | Reporte de inventario por ubicación con valor económico exportable | — | `[x]` | Único reporte visible para rol `compras` |
+| F2-13 | Reporte de visitas planificadas vs realizadas exportable | — | `[x]` | |
+| F2-14 | Reporte de incidencias y garantías por período exportable | — | `[x]` | |
+
+### Fase 2 — Log (2026-03-24)
+
+Completado: Garantías, Proveedores, Compras, Dashboard, Reportes y hardening de release comercial.
+
+Decisiones técnicas:
+- Exportación `.xlsx` movida a backend con `exceljs` y endpoint único `/api/reportes/export`.
+- `compras` usa home dedicado `/admin/compras`; `proxy`, `root` y login comparten `getHomeForRole`.
+- Dashboard alineado con el plan maestro: `cobros_mes`, feed de 5 incidencias abiertas y suite analítica con realtime + fallback.
+- Toda visita `completada` requiere al menos 1 foto final de vitrina, también validado en RPC y flujo offline.
+- Playwright ahora levanta la app vía `webServer`; CI resetea Supabase local, genera tipos, corre tests y `npm audit --omit=dev`.
 
 ---
 
@@ -200,9 +211,10 @@ Decisiones técnicas:
 | 2026-03-21 | Sprint 1 | Bug fix | Route groups (admin)/(campo) no generan prefijo URL. Páginas movidas a subcarpetas admin/ y campo/ dentro del grupo. |
 | 2026-03-21 | Sprint 1 | Bug fix | Selects vacíos en PDV (zona_id, forma_pago_preferida) fallaban validación Zod. Añadido z.preprocess para convertir "" → undefined. |
 | 2026-03-22 | Sprint 2 | Completado | Módulos Vitrinas (listado + detalle tabs), Inventario Central y Rutas con DnD. Dependencias: @dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities. |
-| 2026-03-23 | Sprint 4 | Completado | Flujo completo de cierre de visita: cobro, reposición, fotos opcionales y cierre transaccional vía RPC. Admin: formas de pago e inventario de colaboradoras. |
+| 2026-03-23 | Sprint 4 | Completado | Flujo completo de cierre de visita: cobro, reposición, fotos y cierre transaccional vía RPC. Admin: formas de pago e inventario de colaboradoras. |
 | 2026-03-23 | Sprint 5 | Completado | Inventario avanzado: bajas, historial y valorizado. Incidencias: captura en campo, gestión admin y ciclo de vida validado en DB. |
 | 2026-03-23 | Sprint 6 | Completado | Offline de campo con IndexedDB + cola de sync + RPC idempotente para cierre de visita, fotos/incidencias pendientes, compresión y QA móvil/offline. |
+| 2026-03-24 | Fase 2 | Completado | Garantías, proveedores, compras, dashboard y reportes cerrados. Exportación Excel server-side, filtro por producto, routing por rol unificado, checklist de release y CI end-to-end. |
 
 ---
 
@@ -258,6 +270,8 @@ Decisiones técnicas:
 
 **Bucket de fotos:** El nombre consistente del bucket en local y RLS es `fotos-visita`. Evitar variantes como `visitas-fotos` o `fotos-visitas` en código nuevo.
 
+**Foto final obligatoria:** Desde el cierre comercial de Fase 2, una visita no puede quedar `completada` sin al menos 1 foto final de vitrina. La regla vive en UI, sync offline y RPC.
+
 **Regresión de Sprint 3:** Con Sprint 4, `guardarConteo` ya no redirige a ruta; ahora avanza a cobro dentro de `/campo/visita/[id]`. Los tests de Sprint 3 deben validar esa transición.
 
 ### Decisiones Sprint 6 (relevantes para sprints futuros)
@@ -277,6 +291,16 @@ Decisiones técnicas:
 **Historial y valorización por vistas SQL:** Para evitar joins repetidos en cliente, Sprint 5 creó las vistas `movimientos_inventario_detalle` e `inventario_valorizado`. Los hooks consumen esas vistas como fuente principal.
 
 **Incidencias sin romper el stepper:** El registro de incidencias en campo se integró como acción secundaria en `/campo/visita/[id]`; no se añadió una nueva `EtapaVisita`, preservando el flujo estable de Sprint 4.
+
+### Decisiones Fase 2 (relevantes para release y mantenimiento)
+
+**Exportación de reportes:** Los workbooks ya no se construyen en cliente. Todo `.xlsx` sale del endpoint `/api/reportes/export` con `exceljs`; la UI solo descarga.
+
+**Routing por rol:** `getHomeForRole` es la fuente única para login, `/` y `proxy`. Si se agrega un rol nuevo, debe actualizarse ahí primero.
+
+**Reportes por rol:** `compras` entra al centro de reportes pero solo ve inventario. `admin`, `supervisor` y `analista` mantienen la suite completa.
+
+**Gate comercial:** Antes de marcar una release como lista deben pasar `db:reset`, `seed:auth`, `types:gen`, `type-check`, `lint`, `test`, `build`, `test:e2e` y `audit:prod`.
 
 **Fotos de incidencia:** Se reutiliza el bucket `fotos-visita` con paths `incidencias/{incidencia_id}/...`, y las referencias quedan en la tabla `fotos_incidencia`.
 

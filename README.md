@@ -24,7 +24,7 @@ It replaces manual coordination with a structured system for:
 - inventory counting and inferred sales
 - payment registration and discrepancy handling
 - replenishment from central stock to field staff to display cases
-- admin visibility into visits, stock, and operations
+- admin visibility into visits, stock, guarantees, purchasing, and analytics
 
 This is one of my strongest portfolio projects because it combines product thinking, operational domain modeling, backend integrity, and end-to-end ownership.
 
@@ -33,7 +33,10 @@ This is one of my strongest portfolio projects because it combines product think
 - Mobile-first workflow for field collaborators
 - Role-based admin and field experiences
 - SQL triggers and RPCs for transactional inventory logic
-- Automated coverage with Playwright and Vitest
+- Offline-first field execution with sync queue and image compression
+- Dashboard and exportable reports for operational analytics
+- Server-side Excel export flow backed by `exceljs`
+- Automated coverage with Playwright, Vitest, and CI checks
 
 ## Stack
 
@@ -49,19 +52,23 @@ This is one of my strongest portfolio projects because it combines product think
 
 ## Current Scope
 
-Implemented so far:
+Implemented in the current release candidate through Fase 2:
 
 - auth and role-based routing
 - products, categories, users, routes, and points of sale
 - display cases and central inventory
 - route-of-the-day and visit execution
-- counting, payment capture, replenishment, photos, and transactional visit closing
+- counting, payment capture, replenishment, guarantees, incidences, photos, and transactional visit closing
+- supplier and purchase management with reception flow
+- dashboard with monthly collections, low-stock visibility, and open-incidence feed
+- exportable reports for sales, ranking, inventory, visits, and incidences/guarantees
 
-Next up:
+Release hardening included:
 
-- incident workflows
-- inventory history and reporting
-- analytics and deeper operational tooling
+- coherent role home routing, including `compras`
+- at least one final display-case photo required to complete a visit
+- local Supabase reset + auth seeding + type generation workflow
+- CI pipeline and release checklist for commercial readiness
 
 ## Local Setup
 
@@ -70,10 +77,9 @@ git clone https://github.com/scldrn/powERP.git
 cd powERP/erp-vitrinas
 
 npm install
-cp .env.example .env.local
-
-supabase start
-supabase db reset
+npm run db:start
+./scripts/export-supabase-env.sh dotenv > .env.local
+npm run db:reset
 npm run seed:auth
 npm run dev
 ```
@@ -83,6 +89,8 @@ Main app: `http://localhost:3000`
 ## Quality Checks
 
 ```bash
+npm run ci:checks
+npm run audit:prod
 npm run type-check
 npm run lint
 npm test
@@ -90,11 +98,16 @@ npm run build
 npm run test:e2e
 ```
 
+Release gate details live in `RELEASE_CANDIDATE_CHECKLIST.md`.
+
 ## Repository
 
 - `erp-vitrinas/`: main application
 - `docs/`: sprint and implementation docs
 - `SPRINTS.md`: delivery history
+- `ERP_CRM_Plan_v2.md`: master product plan aligned to the shipped scope
+- `RELEASE_CANDIDATE_CHECKLIST.md`: commercial release gate
+- `DEPLOYMENT_RUNBOOK.md`: staging/production promotion and rollback guide
 - `CLAUDE.md`: repo conventions
 
 ## License

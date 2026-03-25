@@ -7,6 +7,7 @@ Main application workspace for [powERP](../README.md).
 - Next.js 16 App Router app
 - admin and field workflows
 - Supabase migrations and Edge Functions
+- dashboard, reports, guarantees, suppliers, and purchases
 - Playwright and Vitest tests
 
 ## Main folders
@@ -21,10 +22,9 @@ Main application workspace for [powERP](../README.md).
 
 ```bash
 npm install
-cp .env.example .env.local
-
-supabase start
-supabase db reset
+npm run db:start
+./scripts/export-supabase-env.sh dotenv > .env.local
+npm run db:reset
 npm run seed:auth
 npm run dev
 ```
@@ -33,9 +33,12 @@ npm run dev
 
 ```bash
 npm run dev
+npm run dev:host
 npm run build
 npm run lint
 npm run type-check
 npm test
 npm run test:e2e
+npm run ci:checks
+npm run audit:prod
 ```

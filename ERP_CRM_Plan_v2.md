@@ -301,9 +301,9 @@ erp-vitrinas/
 |---|---|---|
 | `admin` | Control total del sistema. | Panel web completo. |
 | `colaboradora` | Ejecución de visitas en campo. | Vista móvil: su ruta del día, visitas, incidencias. |
-| `supervisor` | Supervisión de rutas y colaboradoras. | Panel web: rutas, visitas, incidencias, reportes parciales. |
+| `supervisor` | Supervisión de rutas y colaboradoras. | Panel web: rutas, visitas, incidencias, dashboard y reportes. |
 | `analista` | Consulta y reportes. | Panel web: solo lectura, dashboards, exportaciones. |
-| `compras` | Gestión de proveedores e inventario central. | Panel web: proveedores, compras, inventario central. |
+| `compras` | Gestión de abastecimiento y control administrativo relacionado. | Panel web: proveedores, compras, inventario central, garantías en lectura y reporte de inventario. |
 
 ### 6.2 Matriz de Permisos
 
@@ -320,10 +320,10 @@ erp-vitrinas/
 | Detalle visita | CRUD | C (en su visita) | R | R | — |
 | Cobros | CRUD | C (en su visita) | R | R | — |
 | Incidencias | CRUD | C + R | CRUD | R | — |
-| Garantías | CRUD | C | R | R | — |
+| Garantías | CRUD | C | R | R | R |
 | Proveedores | CRUD | — | — | R | CRUD |
 | Compras | CRUD | — | — | R | CRUD |
-| Reportes | Completo | — | Parcial | Completo | Parcial |
+| Reportes | Completo | — | Completo | Completo | Inventario |
 | Usuarios | CRUD | — | — | — | — |
 
 ---
@@ -375,8 +375,8 @@ erp-vitrinas/
 | HU-19 | Como colaboradora, quiero ver el monto total a cobrar calculado automáticamente. | Monto = Σ(unidades_vendidas × precio_unitario). Se muestra desglosado por producto. | Alta |
 | HU-20 | Como colaboradora, quiero registrar el monto cobrado y la forma de pago. | Se registra el monto real cobrado. Si difiere del calculado, la nota es obligatoria. | Alta |
 | HU-21 | Como colaboradora, quiero registrar las unidades repuestas por producto. | El sistema sugiere reponer hasta el surtido estándar. Colaboradora puede ajustar. Se genera movimiento de inventario. | Alta |
-| HU-22 | Como colaboradora, quiero tomar y subir una foto de la vitrina. | Foto subida a Supabase Storage y vinculada a la visita (antes y después de reposición). | Media |
-| HU-23 | Como colaboradora, quiero cerrar la visita y que el sistema actualice el inventario. | Al cerrar: actualiza `inventario_vitrina` e `inventario_central`, genera movimientos, visita queda en `completada`. | Alta |
+| HU-22 | Como colaboradora, quiero tomar y subir una foto de la vitrina. | Foto subida a Supabase Storage y vinculada a la visita (antes y después de reposición). Al menos 1 foto final es obligatoria para completar la visita. | Media |
+| HU-23 | Como colaboradora, quiero cerrar la visita y que el sistema actualice el inventario. | Al cerrar: actualiza `inventario_vitrina` e `inventario_colaboradora`, genera movimientos, registra el cobro y la visita queda en `completada`. | Alta |
 | HU-24 | Como colaboradora, quiero marcar una visita como no realizada con su motivo. | Se registra la visita como `no_realizada` con motivo. El admin recibe una alerta. | Alta |
 
 ### 7.6 Inventario
@@ -407,8 +407,8 @@ erp-vitrinas/
 
 | ID | Historia | Criterios de Aceptación | Prioridad |
 |---|---|---|---|
-| HU-34 | Como admin, quiero un dashboard con ventas del día, visitas realizadas y cobros totales. | Dashboard en tiempo real con Supabase Realtime. Gráficas de tendencia semanal. | Alta |
-| HU-35 | Como admin, quiero un reporte de ventas por período filtrable por ruta, colaboradora y PDV. | Tabla y gráfica exportable a Excel (.xlsx). | Media |
+| HU-34 | Como admin, quiero un dashboard con ventas del día, visitas realizadas y cobros del mes. | Dashboard en tiempo real con Supabase Realtime y fallback polling. Incluye ventas diarias últimos 30 días, ventas del mes por ruta/colaboradora, top vitrinas, stock bajo y últimas 5 incidencias abiertas con antigüedad. | Alta |
+| HU-35 | Como admin, quiero un reporte de ventas por período filtrable por ruta, colaboradora, PDV y producto. | Tabla y gráfica exportable a Excel (.xlsx) desde backend. | Media |
 | HU-36 | Como admin, quiero un ranking de vitrinas por ventas. | Ranking filtrable por período. Indicadores de cambio vs período anterior. | Media |
 | HU-37 | Como admin, quiero alertas de stock bajo en vitrinas (< 30% del surtido estándar). | Alerta visible en dashboard. Notificación opcional por email/WhatsApp en Fase 3. | Media |
 
@@ -429,8 +429,8 @@ erp-vitrinas/
 7. La colaboradora registra el monto cobrado y la forma de pago (puede diferir del calculado con nota obligatoria).
 8. La app sugiere unidades a reponer para alcanzar el surtido estándar. La colaboradora confirma o ajusta.
 9. Si hay eventos anómalos: registra incidencia o garantía.
-10. Opcionalmente sube fotos de la vitrina (antes y después).
-11. Pulsa **Cerrar Visita**. El sistema: (a) actualiza `inventario_vitrina`, (b) descuenta `inventario_central`, (c) genera movimientos, (d) registra el cobro, (e) marca la visita como `completada`.
+10. Sube fotos de la vitrina (antes y después). Para completar la visita debe quedar al menos 1 foto final registrada.
+11. Pulsa **Cerrar Visita**. El sistema: (a) actualiza `inventario_vitrina`, (b) descuenta `inventario_colaboradora`, (c) genera movimientos, (d) registra el cobro, (e) marca la visita como `completada`.
 
 **Casos especiales:**
 - **Sin conexión:** la visita se guarda en IndexedDB y se sincroniza al reconectar.
@@ -553,11 +553,11 @@ erp-vitrinas/
 
 ### 10.4 Fase 2: Gestión y Analítica
 
-- HU-32, 33: Módulo completo de Garantías.
-- Módulo de Proveedores y Compras.
-- HU-34, 35, 36, 37: Dashboard en tiempo real y reportes de ventas.
-- Reporte de inventario valorizado y rotación.
-- Exportación a Excel con filtros de fecha, ruta y colaboradora.
+- HU-32, 33: Módulo completo de Garantías con captura en campo y resolución administrativa.
+- Módulo de Proveedores y Compras con recepción y actualización de inventario central.
+- HU-34, 35, 36, 37: Dashboard en tiempo real y reportes de ventas alineados al release comercial.
+- Reporte de inventario valorizado y vistas analíticas operativas.
+- Exportación a Excel server-side con filtros de fecha, ruta, colaboradora, PDV y producto.
 
 ### 10.5 Fase 3: Escala y Optimización
 
@@ -658,16 +658,13 @@ erp-vitrinas/
 
 | # | Acción | Responsable | Estado |
 |---|---|---|---|
-| 1 | Revisar y aprobar este documento con todos los stakeholders. | Dueño del negocio | Pendiente |
-| 2 | Crear el proyecto en Supabase (dev + prod) y configurar variables de entorno. | Dev Lead | Pendiente |
-| 3 | Escribir las migraciones SQL de todas las tablas, triggers y políticas RLS. | Dev Lead | Pendiente |
-| 4 | Diseñar el ERD visual en dbdiagram.io y compartirlo para revisión. | Dev Lead | Pendiente |
-| 5 | Crear wireframes de la vista móvil de campo y el panel admin. | Diseñador UX | Pendiente |
-| 6 | Configurar repositorio GitHub con estructura de carpetas y CI/CD. | Dev Lead | Pendiente |
-| 7 | Crear el backlog completo en la herramienta de gestión (Linear / Jira / Notion). | Product Owner | Pendiente |
-| 8 | Planificar y arrancar el Sprint 1. | Todo el equipo | Pendiente |
-| 9 | Seleccionar 1 ruta piloto para pruebas del MVP con colaboradoras reales. | Operaciones | Pendiente |
-| 10 | Definir estrategia de carga de datos iniciales (PDV, vitrinas, productos existentes). | Product Owner + Dev | Pendiente |
+| 1 | Configurar `staging` y `production` en Vercel + Supabase Cloud con secretos separados. | Dev Lead | Pendiente |
+| 2 | Activar branch protection en `main` y `develop` con checks obligatorios. | Dev Lead | Pendiente |
+| 3 | Ejecutar smoke test post-deploy y documentar rollback simple. | Dev Lead | Pendiente |
+| 4 | Validar política de backups y restauración en Supabase Cloud. | Dev Lead | Pendiente |
+| 5 | Activar monitoreo mínimo sobre login, exportación, auth y sync offline. | Dev Lead | Pendiente |
+| 6 | Preparar piloto comercial controlado con 1 ruta y checklist operativa diaria. | Operaciones | Pendiente |
+| 7 | Cerrar evidencia de release candidate y aprobación funcional. | Product Owner + Dev | Pendiente |
 
 ---
 
