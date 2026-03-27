@@ -9,7 +9,7 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
     include: ['lib/**/*.test.ts', 'lib/**/*.test.tsx'],
-    exclude: ['tests/**'],
+    exclude: ['tests/**'], // tests/ is Playwright e2e — handled by playwright.config.ts
   },
   resolve: {
     alias: {
