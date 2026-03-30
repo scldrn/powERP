@@ -6,6 +6,7 @@ export const cobroSchema = z.object({
     .finite('El monto debe ser válido')
     .nonnegative('El monto no puede ser negativo'),
   forma_pago_id: z.string().uuid('La forma de pago es obligatoria'),
+  // Notas obligatorias cuando hay discrepancia (validación a nivel de hook, no de schema)
   notas: z.string().trim().max(500, 'Máximo 500 caracteres').optional(),
 })
 
