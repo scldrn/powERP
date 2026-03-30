@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+// Fuente única de verdad para roles — sincronizado con app_metadata.rol en Supabase Auth
 export const ROLES = ['admin', 'colaboradora', 'supervisor', 'analista', 'compras'] as const
 
 export type UserRol = (typeof ROLES)[number]
