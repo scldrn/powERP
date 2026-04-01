@@ -8,15 +8,15 @@ Thank you for contributing! This guide covers everything you need to get started
 
 - Node.js 20+
 - Docker Desktop (running)
-- [Supabase CLI](https://supabase.com/docs/guides/cli) (`brew install supabase/tap/supabase`)
-- [GitHub CLI](https://cli.github.com/) (`brew install gh`)
+- [Supabase CLI](https://supabase.com/docs/guides/cli/getting-started/install-the-cli) — macOS: `brew install supabase/tap/supabase` · Linux/Windows: see link
+- [GitHub CLI](https://cli.github.com/) — macOS: `brew install gh` · Linux/Windows: see link
 
 ---
 
 ## Local Setup
 
 ```bash
-git clone https://github.com/scldrn/ruteria.git
+git clone https://github.com/scldrn/Ruteria.git
 cd ruteria/ruteria
 
 npm install
@@ -44,7 +44,7 @@ App runs at `http://localhost:3000`
 main ──────────────────────────────────────── production  (protected)
        ↑ release/sprint-N    ↑ hotfix/*
 develop ────────────────────────────────────── integration (protected)
-       ↑ feature/S3-foo  ↑ feature/S3-bar
+       ↑ feature/SN-foo  ↑ feature/SN-bar
 ```
 
 | Branch | Branched from | Merges into | Purpose |
