@@ -1603,7 +1603,20 @@ export type Database = {
     }
     Functions: {
       assert_reportes_analiticos_access: { Args: never; Returns: undefined }
+      business_weekday_es: { Args: { p_target_date: string }; Returns: string }
       calcular_monto_visita: { Args: { p_visita_id: string }; Returns: number }
+      can_access_incidencia: {
+        Args: { p_incidencia_id: string }
+        Returns: boolean
+      }
+      can_access_pdv: { Args: { p_pdv_id: string }; Returns: boolean }
+      can_access_photo_object: {
+        Args: { p_object_name: string }
+        Returns: boolean
+      }
+      can_access_route: { Args: { p_ruta_id: string }; Returns: boolean }
+      can_access_visita: { Args: { p_visita_id: string }; Returns: boolean }
+      can_access_vitrina: { Args: { p_vitrina_id: string }; Returns: boolean }
       cerrar_visita: {
         Args: { p_cobro: Json; p_reposiciones?: Json; p_visita_id: string }
         Returns: undefined
@@ -1620,6 +1633,15 @@ export type Database = {
           p_visita_id: string
         }
         Returns: undefined
+      }
+      ensure_daily_visits_for_user: {
+        Args: { p_colaboradora_id: string; p_target_date: string }
+        Returns: number
+      }
+      ensure_today_visits_for_current_user: { Args: never; Returns: number }
+      generar_visitas_diarias: {
+        Args: { p_target_date?: string }
+        Returns: Json
       }
       get_kpi_ventas: {
         Args: { fecha_fin: string; fecha_inicio: string }
@@ -1695,6 +1717,7 @@ export type Database = {
           ruta_nombre: string
         }[]
       }
+      is_backoffice_role: { Args: never; Returns: boolean }
       recibir_compra: {
         Args: { p_compra_id: string; p_items: Json }
         Returns: undefined

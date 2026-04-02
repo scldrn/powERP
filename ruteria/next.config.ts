@@ -1,8 +1,16 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
+
+function readAllowedDevOrigins() {
+  return (process.env.NEXT_ALLOWED_DEV_ORIGINS ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean)
+}
+
+const allowedDevOrigins = readAllowedDevOrigins()
 
 const nextConfig: NextConfig = {
-  // Local network IPs allowed for dev server cross-origin requests (mobile testing)
-  allowedDevOrigins: ["10.8.158.106", "10.12.82.229"],
-};
+  ...(allowedDevOrigins.length > 0 ? { allowedDevOrigins } : {}),
+}
 
-export default nextConfig;
+export default nextConfig
