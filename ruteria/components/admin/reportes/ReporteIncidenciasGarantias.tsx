@@ -119,7 +119,7 @@ export function ReporteIncidenciasGarantias() {
         columns={columns}
         data={data}
         isLoading={isLoading}
-        getRowKey={(row) => `${row.tipo_registro}-${row.pdv_nombre}-${row.fecha_apertura}`}
+        getRowKey={(row) => row.row_key}
         emptyMessage="Aplica filtros para consultar incidencias y garantías."
       />
 

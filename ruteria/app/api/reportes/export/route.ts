@@ -24,6 +24,8 @@ type ReporteIncidenciasGarantiasRow =
   Database['public']['Functions']['get_reporte_incidencias_garantias']['Returns'][number]
 type InventarioValorizadoRow = Database['public']['Views']['inventario_valorizado']['Row']
 
+class ReporteRequestError extends Error {}
+
 const REPORTES_BY_ROLE: Record<UserRol, ReporteExportTipo[]> = {
   admin: ['ventas', 'ranking', 'inventario', 'visitas', 'incidencias'],
   supervisor: ['ventas', 'ranking', 'inventario', 'visitas', 'incidencias'],
@@ -45,9 +47,16 @@ function readOptional(searchParams: URLSearchParams, key: string) {
   return value ? value : undefined
 }
 
+function isIsoDate(value: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value)
+}
+
 function readRequiredDate(searchParams: URLSearchParams, key: string) {
   const value = readOptional(searchParams, key)
-  if (!value) throw new Error(`El parámetro ${key} es obligatorio`)
+  if (!value) throw new ReporteRequestError(`El parámetro ${key} es obligatorio`)
+  if (!isIsoDate(value)) {
+    throw new ReporteRequestError(`El parámetro ${key} debe tener formato YYYY-MM-DD`)
+  }
   return value
 }
 
@@ -384,7 +393,11 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'No se pudo generar el archivo'
-    return new NextResponse(message, { status: 500 })
+    if (error instanceof ReporteRequestError) {
+      return badRequest(error.message)
+    }
+
+    console.error('Error generating report export:', error)
+    return new NextResponse('No se pudo generar el archivo', { status: 500 })
   }
 }

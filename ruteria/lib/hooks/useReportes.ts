@@ -54,6 +54,7 @@ export type ReporteVisitaItem = {
 }
 
 export type ReporteIncidenciaGarantiaItem = {
+  row_key: string
   tipo_registro: string
   pdv_nombre: string
   descripcion_o_motivo: string
@@ -119,7 +120,8 @@ function mapReporteVisitas(rows: ReporteVisitasRow[] | null): ReporteVisitaItem[
 function mapReporteIncidenciasGarantias(
   rows: ReporteIncidenciasGarantiasRow[] | null
 ): ReporteIncidenciaGarantiaItem[] {
-  return (rows ?? []).map((row) => ({
+  return (rows ?? []).map((row, index) => ({
+    row_key: `${row.tipo_registro ?? '—'}-${row.pdv_nombre ?? '—'}-${row.fecha_apertura ?? ''}-${index}`,
     tipo_registro: row.tipo_registro ?? '—',
     pdv_nombre: row.pdv_nombre ?? '—',
     descripcion_o_motivo: row.descripcion_o_motivo ?? '',
