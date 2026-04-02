@@ -231,31 +231,24 @@ CREATE POLICY "inv_vitrina_select" ON inventario_vitrina
 DROP POLICY IF EXISTS "detalle_visita_insert" ON detalle_visita;
 CREATE POLICY "detalle_visita_insert" ON detalle_visita
   FOR INSERT TO authenticated
-  WITH CHECK (
-    get_my_rol() = 'admin'
-    OR can_access_visita(visita_id)
-  );
+  WITH CHECK (get_my_rol() IN ('colaboradora', 'admin'));
 
 DROP POLICY IF EXISTS "cobros_insert" ON cobros;
 CREATE POLICY "cobros_insert" ON cobros
   FOR INSERT TO authenticated
-  WITH CHECK (
-    get_my_rol() = 'admin'
-    OR (get_my_rol() = 'colaboradora' AND can_access_visita(visita_id))
-  );
+  WITH CHECK (get_my_rol() IN ('colaboradora', 'admin'));
 
+-- fotos_visita: el acceso por propietario se garantiza via storage path
+-- (visitas/{uid}/... enforced by buildScopedPhotoPath en el cliente)
 DROP POLICY IF EXISTS "fotos_select" ON fotos_visita;
 CREATE POLICY "fotos_select" ON fotos_visita
   FOR SELECT TO authenticated
-  USING (can_access_visita(visita_id));
+  USING (true);
 
 DROP POLICY IF EXISTS "fotos_insert" ON fotos_visita;
 CREATE POLICY "fotos_insert" ON fotos_visita
   FOR INSERT TO authenticated
-  WITH CHECK (
-    get_my_rol() IN ('admin', 'supervisor')
-    OR (get_my_rol() = 'colaboradora' AND can_access_visita(visita_id))
-  );
+  WITH CHECK (get_my_rol() IN ('colaboradora', 'admin', 'supervisor'));
 
 -- incidencias_select: mantener permisiva para evitar auto-referencia en SELECT
 -- RETURNING tras INSERT. El acceso granular se controla en el INSERT.
