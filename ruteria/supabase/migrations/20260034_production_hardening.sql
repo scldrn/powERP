@@ -257,10 +257,23 @@ CREATE POLICY "fotos_insert" ON fotos_visita
     OR (get_my_rol() = 'colaboradora' AND can_access_visita(visita_id))
   );
 
+-- incidencias_select: mantener permisiva para evitar auto-referencia en SELECT
+-- RETURNING tras INSERT. El acceso granular se controla en el INSERT.
 DROP POLICY IF EXISTS "incidencias_select" ON incidencias;
 CREATE POLICY "incidencias_select" ON incidencias
   FOR SELECT TO authenticated
-  USING (can_access_incidencia(id));
+  USING (
+    get_my_rol() IN ('admin', 'supervisor', 'analista', 'compras')
+    OR EXISTS (
+      SELECT 1 FROM visitas v
+      WHERE v.id = incidencias.visita_id
+        AND v.colaboradora_id = auth.uid()
+    )
+    OR (
+      visita_id IS NULL
+      AND can_access_pdv(pdv_id)
+    )
+  );
 
 DROP POLICY IF EXISTS "incidencias_insert" ON incidencias;
 CREATE POLICY "incidencias_insert" ON incidencias
@@ -270,9 +283,7 @@ CREATE POLICY "incidencias_insert" ON incidencias
     OR (
       get_my_rol() = 'colaboradora'
       AND (
-        -- incidencia ligada a una visita: acceso a la visita implica acceso al PDV
         (visita_id IS NOT NULL AND can_access_visita(visita_id))
-        -- incidencia directa sobre un PDV sin visita
         OR (visita_id IS NULL AND can_access_pdv(pdv_id))
       )
     )
