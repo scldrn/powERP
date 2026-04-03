@@ -72,19 +72,19 @@ The platform provides:
 - SQL triggers for transactional inventory integrity (no negative stock)
 - Immutable inventory movement log; stock denormalized via triggers
 - Server-side Excel export via `exceljs`
-- CI pipeline with lint, type-check, build, and e2e gates
+- Manual quality workflow with `type-check`, `lint`, `test`, and `build`
 
 ## Local Setup
 
 **Prerequisites:** Node.js 20+, Supabase CLI, Docker
 
 ```bash
-git clone https://github.com/scldrn/ruteria.git
+git clone https://github.com/scldrn/Ruteria.git
 cd ruteria/ruteria
 
 npm install
 supabase start
-cp .env.example .env.local   # fill in values from `supabase status`
+cp .env.example .env.local   # fill in values from `npm run db:status:env`
 npm run db:reset
 npm run seed:auth             # creates auth users via API
 npm run dev
@@ -120,6 +120,7 @@ GitHub workflow is a manual quality run in
 ruteria/                        # repo root
 ├── .github/workflows/ci.yml    # manual quality workflow
 ├── docs/
+│   ├── CONTRIBUTING.md         # contributing guide
 │   └── ESTANDAR_REPO_LIGERO.md # repo operating standard
 ├── ruteria/                    # Next.js application workspace
 │   ├── app/                    # routes — (admin)/* and (campo)/*
@@ -127,15 +128,14 @@ ruteria/                        # repo root
 │   ├── lib/                    # hooks, helpers, validations, Supabase clients
 │   ├── supabase/               # migrations and Edge Functions
 │   └── tests/                  # Playwright e2e specs
-└── CONTRIBUTING.md
 ```
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide. Quick reference:
+See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for the full guide. Quick reference:
 
-**Default flow:** use `develop` for ongoing work, keep changes small, and use
-PRs when they add review context.
+**Default flow:** use `main` as the default branch, keep changes small, and open
+PRs when they add review context or traceability.
 
 **Recommended validation:** `lint` + `test` + `build` by default; add
 `type-check`, `test:e2e`, and `audit:prod` for higher-risk changes.

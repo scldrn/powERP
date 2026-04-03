@@ -2,7 +2,7 @@
 
 This repository follows a lightweight operating standard: keep the flow simple,
 validate locally, and avoid automation that adds more friction than value. See
-[`docs/ESTANDAR_REPO_LIGERO.md`](docs/ESTANDAR_REPO_LIGERO.md) for the policy.
+[`ESTANDAR_REPO_LIGERO.md`](ESTANDAR_REPO_LIGERO.md) for the policy.
 
 ---
 
@@ -17,12 +17,12 @@ validate locally, and avoid automation that adds more friction than value. See
 ## Local Setup
 
 ```bash
-git clone https://github.com/scldrn/ruteria.git
+git clone https://github.com/scldrn/Ruteria.git
 cd ruteria/ruteria
 
 npm install
 supabase start                    # starts local Postgres + Auth + Storage
-cp .env.example .env.local        # fill in values shown by `supabase status`
+cp .env.example .env.local        # fill in values shown by `npm run db:status:env`
 npm run db:reset                  # runs migrations
 npm run seed:auth                 # creates test users via API
 npm run dev
@@ -41,8 +41,7 @@ App runs at `http://localhost:3000`
 
 ## Working Model
 
-- Use `develop` as the default integration branch for ongoing work.
-- Keep `main` production-oriented.
+- Use `main` as the default branch for ongoing work.
 - Create a short-lived branch when it adds clarity; direct pushes are acceptable
   when the context is coordinated and the change is small.
 - Use Pull Requests when they help review or traceability. They are encouraged,
