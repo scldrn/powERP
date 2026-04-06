@@ -21,8 +21,8 @@ const plusJakarta = Plus_Jakarta_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Ruteria - Field Service Management',
-  description: 'Sistema FSM para gestión de rutas, visitas y operación en campo',
+  title: 'Ruteria - Operacion de Rutas y Visitas',
+  description: 'Plataforma de operacion de rutas, visitas, inventario distribuido y recaudo para consignacion',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,

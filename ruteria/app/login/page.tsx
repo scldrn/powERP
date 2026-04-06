@@ -79,7 +79,7 @@ export default function LoginPage() {
               RUTERIA
             </p>
             <p className="text-[11px] mt-0.5" style={{ color: 'var(--gray-600)' }}>
-              Field Service Management
+              Operacion de rutas y visitas
             </p>
           </div>
         </div>

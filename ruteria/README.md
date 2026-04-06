@@ -1,6 +1,6 @@
 # ruteria — app workspace
 
-Next.js 16 application for [ruteria](../README.md). This is the main workspace with all application code, migrations, and tests.
+Next.js 16 application for [ruteria](../README.md). This workspace implements the visit-driven field operations, distributed inventory, collections, purchases, and backoffice workflows of the platform.
 
 ## Structure
 

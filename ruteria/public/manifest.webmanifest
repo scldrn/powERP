@@ -1,7 +1,7 @@
 {
-  "name": "Ruteria Field Service Management",
+  "name": "Ruteria Operacion de Rutas",
   "short_name": "Ruteria",
-  "description": "FSM para gestion de rutas, visitas y operacion en campo",
+  "description": "Plataforma de operacion de rutas, visitas, inventario distribuido y recaudo para consignacion",
   "start_url": "/campo/ruta-del-dia",
   "display": "standalone",
   "background_color": "#f8fafc",

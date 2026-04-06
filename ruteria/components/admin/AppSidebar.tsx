@@ -134,7 +134,7 @@ export function AppSidebar({ rol, user }: AppSidebarProps) {
               RUTERIA
             </p>
             <p className="text-[10px] mt-0.5" style={{ color: 'var(--gray-600)' }}>
-              Field Service
+              Operacion de rutas
             </p>
           </div>
         </div>

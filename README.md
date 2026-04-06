@@ -2,9 +2,9 @@
 
 # ruteria
 
-**Field service management platform for consignment retail networks**
+**Field operations platform for consignment retail networks**
 
-Manages the full visit workflow across **200+ retail locations** — routes, inventory counts, collections, replenishment, and admin oversight — replacing a fully manual operation.
+Coordinates the full visit workflow across **200+ retail locations**: routes, inventory counts, collections, replenishment, incidents, and admin oversight, replacing a fully manual operation.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
@@ -18,7 +18,7 @@ Manages the full visit workflow across **200+ retail locations** — routes, inv
 
 ## Overview
 
-`ruteria` is a production-grade ERP-CRM system for a consignment business that places electronic accessory display cases in third-party retail stores. Field workers visit each store daily to count inventory, collect payments, and restock.
+`ruteria` is a production-grade vertical operations platform for a consignment business that places electronic accessory display cases in third-party retail stores. The system is centered on route execution and store visits: field workers visit each location to count inventory, infer sales from stock differences, collect payments, restock display cases, and report incidents.
 
 The platform provides:
 
@@ -27,6 +27,15 @@ The platform provides:
 - **Payment capture** — amount registration with discrepancy detection and mandatory notes
 - **Replenishment** — central stock to field staff to display case, tracked via immutable movements
 - **Admin panel** — dashboards, exportable reports, purchase management, incident tracking
+
+## System Category
+
+`ruteria` is best understood as a visit-driven field operations system with distributed inventory and route accounting.
+
+- **Primary** — field operations and route execution
+- **Secondary** — distributed inventory control across central stock, collaborator stock, and display cases
+- **Supporting** — lightweight ERP capabilities for purchases, suppliers, catalog, users, dashboards, and exports
+- **Not** — a traditional CRM or a full general-purpose ERP
 
 ## Tech Stack
 
